@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Pulsat</string>
+    <string name="grant_access">Autoriser accès</string>
+    <string name="permission_denied">Accéder réglages</string>
+    <string name="text_allow_acces">Pour accéder à la position, merci d\'autoriser l\'accès</string>
+    <string name="text_settings">Pour accéder à la position, merci d\'autoriser l\'accès dans les settings de l\'application</string>
+</resources>

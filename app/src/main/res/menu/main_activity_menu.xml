@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menuItem_settings"
+        app:showAsAction="always"
+        android:title="Réglages"
+        android:background="@color/black"
+        android:icon="@android:drawable/ic_menu_manage"/>
+
+    <item
+        android:id="@+id/menuItem_quit"
+        app:showAsAction="always"
+        android:title="Quit"
+        android:background="@color/black"/>
+</menu>
