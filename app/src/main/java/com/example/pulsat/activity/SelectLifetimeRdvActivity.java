@@ -3,22 +3,35 @@ package com.example.pulsat.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pulsat.R;
+import com.example.pulsat.model.Rdv;
+import com.example.pulsat.repository.RdvRepository;
+import com.example.pulsat.viewmodel.RdvViewModel;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class SelectLifetimeRdvActivity extends AppCompatActivity {
+    final static long MILLISECONDS_IN_A_DAY = 86400000;
     private Integer lifetimeSelected;
     private RadioButton rb0,rb1,rb7,rb14,rb21,rb31,rb62,rb183,rb365;
+    private RdvViewModel rdvViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        rdvViewModel = new RdvViewModel(getApplication());
         Intent data = getIntent();
         lifetimeSelected = data.getIntExtra("lifetimeSelected",0);
         setContentView(R.layout.activity_selectrdvlifetime);
@@ -40,14 +53,18 @@ public class SelectLifetimeRdvActivity extends AppCompatActivity {
         {
             @Override
             public void onClick(View v) {
-                finishActivity(Activity.RESULT_OK);
+                finish();
             }
         });
+
         Button bt_ok = findViewById(R.id.bt_ok);
         bt_ok.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v) {
+                int number = numberOfRdvToDelette();
+                if (number>0)
+                    Toast.makeText(getApplicationContext(),"Attention, cette modification va effacer "+number+" rendez-vous",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent();
                 intent.putExtra("rdvLifetime", lifetimeSelected);
                 setResult(Activity.RESULT_OK, intent);
@@ -125,5 +142,20 @@ public class SelectLifetimeRdvActivity extends AppCompatActivity {
                 rb365.setChecked(true);
                 break;
         }
+    }
+    private int numberOfRdvToDelette(){
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        String st = formatter.format(System.currentTimeMillis());
+        Date date = null;
+        try {
+            date = (Date)formatter.parse(st);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (lifetimeSelected>0) {
+            List<Rdv> oldRdvs = rdvViewModel.getRdvBeforeDate(date.getTime() - lifetimeSelected * MILLISECONDS_IN_A_DAY);
+           return oldRdvs.size();
+        }
+        return 0;
     }
 }

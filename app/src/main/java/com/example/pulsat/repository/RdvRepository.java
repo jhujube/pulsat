@@ -39,9 +39,12 @@ public class RdvRepository {
         return mListRdv;
     }
 
-    public List<Rdv> getRdvAfterDate(Long timestampDate){
+    public List<Rdv> getRdvBeforeDate(Long timestampDate){
         listRdv = mRdvDao.getRdvBeforeDate(timestampDate);
         return listRdv;
+    }
+    public void deleteRdvBeforeDate(Long timestampDate){
+        mRdvDao.deleteRdvBeforeDate(timestampDate);
     }
 
     public LiveData<List<Rdv>> getAllDates() {

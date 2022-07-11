@@ -24,6 +24,9 @@ public interface RdvDao {
     @Query("SELECT * FROM Rdv WHERE mArrival < :timestampDate ORDER BY mArrival DESC")
     List<Rdv> getRdvBeforeDate(Long timestampDate);
 
+    @Query("DELETE FROM Rdv WHERE mArrival < :timestampDate")
+    int deleteRdvBeforeDate(Long timestampDate);
+
     @Query("SELECT * FROM Rdv WHERE mAddress = :Adress ORDER BY mArrival DESC")
     LiveData<List<Rdv>> getAdressRdv(String Adress);
 

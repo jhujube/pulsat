@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.pulsat.R;
 import com.example.pulsat.event.ReloadSettingsEvent;
@@ -36,7 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_settings);
 
-        TextView selectBtDevice = findViewById(R.id.bluetoothSelect);
+        ConstraintLayout selectBtDevice = findViewById(R.id.bluetooth);
         selectBtDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,7 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
         selectedBtDevice = findViewById(R.id.bluetoothSelectedName);
         selectedBtDevice.setText(getBtDeviceName(btDevice));
 
-        TextView selectRdvLifetime = findViewById(R.id.rdvLife);
+        ConstraintLayout selectRdvLifetime = findViewById(R.id.rdvLifetime);
         selectRdvLifetime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,7 +60,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
         selectedRdvLifetime = findViewById(R.id.lifetime);
-        selectedRdvLifetime.setText(""+rdvLifetime);
+        selectedRdvLifetime.setText(lifeTimeToString(rdvLifetime));
 
         Button bt_cancel = findViewById(R.id.bt_cancel);
         bt_cancel.setOnClickListener(new View.OnClickListener()
@@ -95,7 +96,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_RDV_LIFETIME) {
             if (resultCode == Activity.RESULT_OK) {
                 rdvLifetime = data.getIntExtra("rdvLifetime",0);
-                selectedRdvLifetime.setText(""+rdvLifetime);
+                selectedRdvLifetime.setText(lifeTimeToString(rdvLifetime));
             }
         }
     }
@@ -110,7 +111,7 @@ public class SettingsActivity extends AppCompatActivity {
         Toast.makeText(this,"Réglages sauvegardés!",Toast.LENGTH_LONG).show();
     }
     private void loadSettings(){
-        SharedPreferences sharedPreferences= getSharedPreferences("pulsatSettings", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("pulsatSettings", Context.MODE_PRIVATE);
 
         if(sharedPreferences!= null) {
             btDevice = sharedPreferences.getString("selectedBtDevice", "");
@@ -125,5 +126,28 @@ public class SettingsActivity extends AppCompatActivity {
            return device[0];
         }
         return "";
+    }
+    private String lifeTimeToString(int rdvLifetime){
+        switch (rdvLifetime){
+            case 0:
+                return "Illimitée";
+            case 1:
+                return "1 journée";
+            case 7:
+                return "1 semaine";
+            case 14:
+                return "2 semaines";
+            case 21:
+                return "3 semaines";
+            case 31:
+                return "1 mois";
+            case 62:
+                return "2 mois";
+            case 183:
+                return "6 mois";
+            case 365:
+                return "1 an";
+        }
+        return "?";
     }
 }

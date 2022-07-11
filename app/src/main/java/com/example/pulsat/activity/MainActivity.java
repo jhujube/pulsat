@@ -18,6 +18,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.lights.LightState;
 import android.net.Uri;
@@ -34,6 +35,7 @@ import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.pulsat.R;
 import com.example.pulsat.adapter.CustomAdapterHorizontal;
@@ -53,6 +55,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.security.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -144,13 +150,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleOwner {
     @Override
     protected void onResume() {
         super.onResume();
-        List<Rdv> oldRdvs = rdvViewModel.getRdvBeforeDate(1654675200000L);
-        Date d = new Date();
-        CharSequence s  = DateFormat.format("d M yyyy", d.getTime());
-        Log.d(TAG, "onResume: "+s);
-        for (Rdv rdv : oldRdvs) {
-            Log.d(TAG, "onResume: old rdvs "+rdv.getDate());
-        }
+        rdvViewModel.deleteOldestRdvs();
     }
 
     @Override

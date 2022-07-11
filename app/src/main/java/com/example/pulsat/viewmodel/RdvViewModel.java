@@ -1,6 +1,10 @@
 package com.example.pulsat.viewmodel;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -10,11 +14,15 @@ import com.example.pulsat.model.DayRdv;
 import com.example.pulsat.model.Rdv;
 import com.example.pulsat.repository.RdvRepository;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class RdvViewModel extends AndroidViewModel {
-
+    final static long MILLISECONDS_IN_A_DAY = 86400000;
+    final static String TAG = "RDVVIEWMODEL";
     private RdvRepository mRdvRepository;
     private LiveData<List<Rdv>> mListRdvs;
     private MutableLiveData<List<LiveData<List<Rdv>>>> mListRdvByDate;
@@ -42,7 +50,7 @@ public class RdvViewModel extends AndroidViewModel {
     public LiveData<Rdv> getCurrentRdv(){
         return mRdvRepository.getCurrentRdv();
     }
-    public List<Rdv> getRdvBeforeDate(Long timestampDate) {return mRdvRepository.getRdvAfterDate(timestampDate); }
+    public List<Rdv> getRdvBeforeDate(Long timestampDate) {return mRdvRepository.getRdvBeforeDate(timestampDate); }
 
     public void insertRdv(Rdv rdv) {
         mRdvRepository.insertRdv(rdv);
@@ -60,5 +68,27 @@ public class RdvViewModel extends AndroidViewModel {
     public void deleteAll() {
         mRdvRepository.deleteAll();
     }
+    public void deleteOldestRdvs(){
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        String st = formatter.format(System.currentTimeMillis());
+        Date date = null;
+        try {
+            date = (Date)formatter.parse(st);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        int rdvLifetime = getRdvLifetime();
+        if (rdvLifetime>0) {
+            mRdvRepository.deleteRdvBeforeDate(date.getTime() - rdvLifetime * MILLISECONDS_IN_A_DAY);
+        }
+    }
+    private int getRdvLifetime(){
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("pulsatSettings", Context.MODE_PRIVATE);
 
+        if(sharedPreferences!= null) {
+            return sharedPreferences.getInt("selectedLifetime", 0);
+        } else {
+            return 0;
+        }
+    }
 }

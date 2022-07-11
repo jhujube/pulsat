@@ -85,7 +85,7 @@ public class SelectBtDevice extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
                 String selectedDevice = mDeviceList.get(index);
-                selectedDevice.replace(SELECTED,"");
+                selectedDevice = selectedDevice.replace(SELECTED,"");
                 Intent intent = new Intent();
                 intent.putExtra("SelectedDevice", selectedDevice);
                 setResult(Activity.RESULT_OK, intent);
