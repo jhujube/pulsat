@@ -25,6 +25,14 @@ public class DayRdv {
         return rdvList;
     }
 
+    public Rdv getRdvAtPos (int pos){ return rdvList.get(pos);}
+
+    public Rdv removeRdvAtPos (int pos){ return rdvList.remove(pos);}
+
+    public int rdvListSize () {return rdvList.size();}
+
+    public void add(int position, Rdv rdv) {rdvList.add(position,rdv);}
+
     public void setRdvList(List<Rdv> rdvList) {
         this.rdvList = rdvList;
     }

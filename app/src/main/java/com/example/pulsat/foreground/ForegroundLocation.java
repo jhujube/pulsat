@@ -286,16 +286,17 @@ public class ForegroundLocation extends LifecycleService {
         if (!isInterventionOngoing) {
             adress = NO_ADRESS;
             isAddressOk = false;
-            if ((System.currentTimeMillis()-(lastRdv.getArrival()+lastRdv.getElapsedTime()*1000))>MIN_STOP_TIME) {
-                intervention = new Rdv(System.currentTimeMillis());
-                intervention.setAddress(adress);
-                rdvViewModel.insertRdv(intervention);
-            } else{
+            if (lastRdv==null || (System.currentTimeMillis() - (lastRdv.getArrival() + lastRdv.getElapsedTime() * 1000)) > MIN_STOP_TIME) {
+                    intervention = new Rdv(System.currentTimeMillis());
+                    intervention.setAddress(adress);
+                    rdvViewModel.insertRdv(intervention);
+            } else {
                 intervention = new Rdv(lastRdv.getArrival());
                 intervention.setAddress(adress);
                 intervention.setElapsedTime(0);
                 rdvViewModel.updateRdv(intervention);
             }
+
             EventBus.getDefault().postSticky(new InterventionStateEvent(true));
             isInterventionOngoing = true;
             notifHandler.post(notificationCode);

@@ -18,12 +18,12 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
     private Rdv rdv;
 
     public void setOnItemClickListener(CustomAdapter.OnItemClickListener l,Rdv rdv) {
-        Log.d("ClickListener", "C");
+        //Log.d("ClickListener", "C");
         this.rdv = rdv;
         this.listener = l;
     }
     @Override public void onClick(View v) {
-        Log.d("ClickListener", "4");
+        //Log.d("ClickListener", "4");
         EventBus.getDefault().post(new RdvClickEvent(rdv));
 
     }
@@ -35,7 +35,7 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
         duree = itemView.findViewById(R.id.duree);
         arrivee = itemView.findViewById(R.id.arrivee);
         depart = itemView.findViewById(R.id.depart);
-        Log.d("ClickListener", "A");
+        //Log.d("ClickListener", "A");
         view.setOnClickListener(this);
     }
     public TextView getRue(){return rue;}

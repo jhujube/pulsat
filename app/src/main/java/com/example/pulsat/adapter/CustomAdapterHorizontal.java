@@ -23,10 +23,13 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import com.example.pulsat.R;
 import com.example.pulsat.activity.MainActivity;
+import com.example.pulsat.event.RdvActionEvent;
 import com.example.pulsat.model.DayRdv;
 import com.example.pulsat.model.Rdv;
 import com.example.pulsat.viewmodel.RdvViewModel;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -75,6 +78,35 @@ public class CustomAdapterHorizontal extends RecyclerView.Adapter<ViewHolderHori
         customAdapter.updateRdvsList(dayRdv.getRdvList());
         customAdapter.notifyDataSetChanged();
 
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                // this method is called
+                // when the item is moved.
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int positionRdv = viewHolder.getAdapterPosition();
+                int positionList = holder.getAdapterPosition();
+
+                DayRdv dayRdv1 = dayRdvList.get(positionList);
+                Rdv deletedRdv = dayRdv1.getRdvAtPos(positionRdv);
+                EventBus.getDefault().post(new RdvActionEvent(deletedRdv,"delete"));
+
+                // below line is to display our snackbar with action.
+                Snackbar.make(holder.getChildRecyclerview(), deletedRdv.getAddress(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EventBus.getDefault().post(new RdvActionEvent(deletedRdv,"insert"));
+                    }
+                }).show();
+
+            }
+            // at last we are adding this
+            // to our recycler view.
+        }).attachToRecyclerView(holder.getChildRecyclerview());
 
     }
 

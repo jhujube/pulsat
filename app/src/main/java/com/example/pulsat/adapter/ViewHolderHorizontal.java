@@ -27,10 +27,10 @@ public class ViewHolderHorizontal  extends RecyclerView.ViewHolder{
         mRecyclerView = itemView.findViewById(R.id.recyclerVertical);
         date.setOnTouchListener((view, motionEvent) -> {
             switch (motionEvent.getAction()) {
-                case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_DOWN:           //appui sur date
                     EventBus.getDefault().post(new DateTouchStateEvent(true));
                     break;
-                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_UP:             //relache date
                     EventBus.getDefault().post(new DateTouchStateEvent(false));
                     break;
             }

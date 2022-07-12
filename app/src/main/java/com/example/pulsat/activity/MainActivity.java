@@ -42,6 +42,7 @@ import com.example.pulsat.adapter.CustomAdapterHorizontal;
 import com.example.pulsat.event.DateTouchStateEvent;
 import com.example.pulsat.event.ForegroundLocationStateEvent;
 import com.example.pulsat.event.InterventionStateEvent;
+import com.example.pulsat.event.RdvActionEvent;
 import com.example.pulsat.event.RdvClickEvent;
 import com.example.pulsat.event.RequestAccesFineLocationPermissionEvent;
 import com.example.pulsat.event.RequestBluetoothConnectPermissionEvent;
@@ -192,19 +193,16 @@ public class MainActivity extends AppCompatActivity implements LifecycleOwner {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.BLUETOOTH_CONNECT}, BLUETOOTH_CONNECT_PERMISSION_REQUEST_CODE);
     }
-
-
     public void openAppSettingEvent(){
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.parse("package:"+getApplicationContext().getPackageName());
         intent.setData(uri);
         startActivity(intent);
     }
-
     @Subscribe
     @SuppressWarnings("unused")
     public void onRdvClickEvent(RdvClickEvent event){
-        deleteRdv(event.getRdv());
+        manageRdv(event.getRdv());
     }
 
     @Subscribe (sticky = true, threadMode = ThreadMode.MAIN)
@@ -220,13 +218,13 @@ public class MainActivity extends AppCompatActivity implements LifecycleOwner {
         buttonChrono.setImageResource( isInterventionOn ? android.R.drawable.ic_media_pause : android.R.drawable.ic_media_play);
     }
 
-    private void deleteRdv(Rdv rdv){
+    private void manageRdv(Rdv rdv){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Gerer le rendez-vous")
                 .setTitle("Gestion");
         builder.setPositiveButton("Effacer", (dialog, id) -> {
             Log.d("MAINACTIVITY", "delete rdv n°"+rdv.getArrival());
-            rdvViewModel.deleteRdv(rdv);
+            deleteRdv(rdv);
         });
         builder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -245,7 +243,18 @@ public class MainActivity extends AppCompatActivity implements LifecycleOwner {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
+    @Subscribe
+    @SuppressWarnings("unused")
+    public void onRdvActionEvent(RdvActionEvent event){
+        if (event.getAction()=="delete")
+            deleteRdv(event.getRdv());
+        if (event.getAction()=="insert")
+            insertRdv(event.getRdv());
+    }
+    private void deleteRdv(Rdv rdv){
+        rdvViewModel.deleteRdv(rdv);
+    }
+    private void insertRdv(Rdv rdv) {rdvViewModel.insertRdv(rdv);}
     @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -64,7 +64,7 @@ public class CustomAdapter extends RecyclerView.Adapter<ViewHolder> {
             viewHolder.getDuree().setText("-:--");
             viewHolder.getDepart().setText("-:--");
         }
-        Log.d("ClickListener", "B");
+        //Log.d("ClickListener", "B");
         viewHolder.setOnItemClickListener(this.listener, rdv);
     }
 
